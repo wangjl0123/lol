@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AD英雄列表 - 英雄联盟</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: #fff;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px 0;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #ff6b6b, #ffa502, #ffd700, #4ecdc4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            color: #ccc;
+        }
+
+        .filter-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 40px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .filter-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .filter-group {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .filter-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #ffd700;
+        }
+
+        .role-filter {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .role-tag {
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            border: 2px solid transparent;
+        }
+
+        .role-tag.adc {
+            background: linear-gradient(45deg, #ff6b6b, #ff8e53);
+        }
+
+        .role-tag.marksman {
+            background: linear-gradient(45deg, #4ecdc4, #45b7d1);
+        }
+
+        .role-tag.fighter {
+            background: linear-gradient(45deg, #96ceb4, #ffeaa7);
+        }
+
+        .role-tag.support {
+            background: linear-gradient(45deg, #ffeaa7, #fab1a0);
+        }
+
+        .role-tag.tank {
+            background: linear-gradient(45deg, #dfe6e9, #b2bec3);
+        }
+
+        .role-tag.mage {
+            background: linear-gradient(45deg, #a29bfe, #6c5ce7);
+        }
+
+        .role-tag.assassin {
+            background: linear-gradient(45deg, #fd79a8, #e84393);
+        }
+
+        .role-tag.active {
+            border-color: #ffd700;
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 12px 20px;
+            border-radius: 25px;
+            border: none;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .search-box:focus {
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+        }
+
+        .search-box::placeholder {
+            color: #999;
+        }
+
+        .sort-select {
+            width: 100%;
+            padding: 12px 20px;
+            border-radius: 25px;
+            border: none;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            font-size: 16px;
+            outline: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .sort-select:focus {
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+        }
+
+        .sort-select option {
+            background: #1a1a2e;
+            color: #fff;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .hero-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .hero-card:hover {
+            transform: translateY(-15px) scale(1.05) rotateX(5deg);
+            box-shadow: 0 20px 60px rgba(255, 215, 0, 0.2);
+            border-color: rgba(255, 215, 0, 0.5);
+        }
+
+        .hero-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            transition: all 0.3s ease;
+        }
+
+        .hero-card:hover .hero-image {
+            transform: scale(1.1);
+        }
+
+        .hero-info {
+            padding: 20px;
+        }
+
+        .hero-name {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #ffd700;
+            text-align: center;
+        }
+
+        .hero-title {
+            font-size: 1rem;
+            color: #ccc;
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+
+        .hero-roles {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .hero-role {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .hero-description {
+            font-size: 0.9rem;
+            color: #ddd;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .stats-bar {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .stat-name {
+            font-size: 0.85rem;
+            color: #ccc;
+        }
+
+        .stat-value {
+            font-size: 0.85rem;
+            color: #ffd700;
+            font-weight: bold;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-top: 40px;
+        }
+
+        .page-btn {
+            padding: 10px 20px;
+            border-radius: 25px;
+            border: 2px solid #ffd700;
+            background: transparent;
+            color: #ffd700;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .page-btn:hover {
+            background: #ffd700;
+            color: #1a1a2e;
+            transform: scale(1.1);
+        }
+
+        .page-btn.active {
+            background: #ffd700;
+            color: #1a1a2e;
+        }
+
+        .page-info {
+            color: #ccc;
+            font-size: 0.9rem;
+        }
+
+        .result-count {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #ffd700;
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .filter-row {
+                flex-direction: column;
+                gap: 25px;
+            }
+
+            .hero-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .hero-card {
+                margin: 0 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>英雄列表</h1>
+            <p>英雄联盟 - 英雄资料</p>
+        </div>
+
+        <div class="filter-section">
+            <div class="filter-row">
+                <div class="filter-group">
+                    <label>角色筛选</label>
+                    <div class="role-filter">
+                        
+                <div class="role-tag marksman" data-role="marksman">射手</div>
+                <div class="role-tag fighter" data-role="fighter">战士</div>
+                <div class="role-tag support" data-role="support">辅助</div>
+                <div class="role-tag tank" data-role="tank">坦克</div>
+                <div class="role-tag mage" data-role="mage">法师</div>
+                <div class="role-tag assassin" data-role="assassin">刺客</div>
+            </div>
+                </div>
+            </div>
+
+            <div class="filter-row">
+                <div class="filter-group">
+                    <label>搜索英雄</label>
+                    <input type="text" class="search-box" id="searchInput" placeholder="输入英雄名称或称号...">
+                </div>
+
+                <div class="filter-group">
+                    <label>排序方式</label>
+                    <select class="sort-select" id="sortSelect">
+                        <option value="name-asc">名称升序</option>
+                        <option value="name-desc">名称降序</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="result-count" id="resultCount">共 28 个AD英雄</div>
+
+        <div class="hero-grid" id="heroGrid">
+            <!-- 英雄卡片将通过JavaScript动态生成 -->
+        </div>
+
+        <div class="pagination">
+            <button class="page-btn" id="prevPage">上一页</button>
+            <span class="page-info">第 <span id="currentPage">1</span> / <span id="totalPages">1</span> 页</span>
+            <button class="page-btn" id="nextPage">下一页</button>
+        </div>
+    </div>
+
+    <script>
+        // 英雄数据
+        const heroes = [
+            { id: 1, name: "小火龙", roles: ["marksman"], image: "images/ad/screenshot_0000.jpg" },
+            { id: 2, name: "金克斯", roles: ["marksman"], image: "images/ad/screenshot_0001.jpg" },
+            { id: 3, name: "卢锡安", roles: ["marksman"], image: "images/ad/screenshot_0002.jpg" },
+            { id: 4, name: "男枪", roles: ["marksman"], image: "images/ad/screenshot_0003.jpg" },
+            { id: 5, name: "薇恩", roles: ["marksman"], image: "images/ad/screenshot_0004.jpg" },
+            { id: 6, name: "沙弥拉", roles: ["marksman"], image: "images/ad/screenshot_0005.jpg" },
+            { id: 7, name: "奎因", roles: ["marksman"], image: "images/ad/screenshot_0006.jpg" },
+            { id: 8, name: "老鼠", roles: ["marksman"], image: "images/ad/screenshot_0007.jpg" },
+            { id: 9, name: "寒冰", roles: ["marksman"], image: "images/ad/screenshot_0008.jpg" },
+            { id: 10, name: "女枪", roles: ["marksman"], image: "images/ad/screenshot_0009.jpg" },
+            { id: 11, name: "厄斐琉斯", roles: ["marksman"], image: "images/ad/screenshot_0010.jpg" },
+            { id: 12, name: "德莱文", roles: ["marksman"], image: "images/ad/screenshot_0011.jpg" },
+            { id: 13, name: "烬", roles: ["marksman"], image: "images/ad/screenshot_0012.jpg" },
+            { id: 14, name: "女警", roles: ["marksman"], image: "images/ad/screenshot_0013.jpg" },
+            { id: 15, name: "千珏", roles: ["marksman"], image: "images/ad/screenshot_0014.jpg" },
+            { id: 16, name: "EZ", roles: ["marksman"], image: "images/ad/screenshot_0015.jpg" },
+            { id: 17, name: "复仇之矛", roles: ["marksman"], image: "images/ad/screenshot_0016.jpg" },
+            { id: 18, name: "维鲁斯", roles: ["marksman"], image: "images/ad/screenshot_0017.jpg" },
+            { id: 19, name: "塞纳", roles: ["marksman"], image: "images/ad/screenshot_0018.jpg" },
+            { id: 20, name: "祖安火花", roles: ["marksman"], image: "images/ad/screenshot_0019.jpg" },
+            { id: 21, name: "大嘴", roles: ["marksman"], image: "images/ad/screenshot_0020.jpg" },
+            { id: 22, name: "天使", roles: ["marksman"], image: "images/ad/screenshot_0021.jpg" },
+            { id: 23, name: "轮子妈", roles: ["marksman"], image: "images/ad/screenshot_0022.jpg" },
+            { id: 24, name: "霞", roles: ["marksman"], image: "images/ad/screenshot_0023.jpg" },
+            { id: 25, name: "尼菈", roles: ["marksman"], image: "images/ad/screenshot_0024.jpg" },
+            { id: 26, name: "小炮", roles: ["marksman"], image: "images/ad/screenshot_0025.jpg" },
+            { id: 27, name: "阿克尚", roles: ["marksman"], image: "images/ad/screenshot_0026.jpg" },
+            { id: 28, name: "飞机", roles: ["marksman"], image: "images/ad/screenshot_0027.jpg" }
+        ];
+
+        // 大图预览模态框
+        let modal = null;
+        let modalImg = null;
+        let modalCaption = null;
+
+        // 初始化模态框
+        function initModal() {
+            // 创建模态框元素
+            modal = document.createElement('div');
+            modal.style.cssText = `
+                display: none;
+                position: fixed;
+                z-index: 1000;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                overflow: auto;
+                background-color: rgba(0,0,0,0.9);
+            `;
+
+            // 创建关闭按钮
+            const closeBtn = document.createElement('span');
+            closeBtn.style.cssText = `
+                position: absolute;
+                top: 15px;
+                right: 35px;
+                color: #f1f1f1;
+                font-size: 40px;
+                font-weight: bold;
+                transition: 0.3s;
+                cursor: pointer;
+            `;
+            closeBtn.textContent = '×';
+            closeBtn.onclick = function() { modal.style.display = 'none'; };
+
+            // 创建图片容器
+            const imgContainer = document.createElement('div');
+            imgContainer.style.cssText = `
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100%;
+                padding: 20px;
+            `;
+
+            // 创建图片元素
+            modalImg = document.createElement('img');
+            modalImg.style.cssText = `
+                max-width: 100%;
+                max-height: 100%;
+                object-fit: contain;
+            `;
+
+            // 创建标题
+            modalCaption = document.createElement('div');
+            modalCaption.style.cssText = `
+                text-align: center;
+                color: #ccc;
+                padding: 10px 0;
+                font-size: 1.5rem;
+            `;
+
+            // 组装模态框
+            imgContainer.appendChild(modalImg);
+            imgContainer.appendChild(modalCaption);
+            modal.appendChild(closeBtn);
+            modal.appendChild(imgContainer);
+            document.body.appendChild(modal);
+
+            // 点击模态框背景关闭
+            modal.onclick = function(event) {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            };
+        }
+
+        // 当前筛选条件
+        const currentFilter = {
+            roles: [],
+            search: '',
+            sort: 'name-asc',
+            page: 1,
+            pageSize: 12
+        };
+
+        // DOM元素
+        const heroGrid = document.getElementById('heroGrid');
+        const searchInput = document.getElementById('searchInput');
+        const sortSelect = document.getElementById('sortSelect');
+        const roleTags = document.querySelectorAll('.role-tag');
+        const resultCount = document.getElementById('resultCount');
+        const prevPageBtn = document.getElementById('prevPage');
+        const nextPageBtn = document.getElementById('nextPage');
+        const currentPageSpan = document.getElementById('currentPage');
+        const totalPagesSpan = document.getElementById('totalPages');
+
+        // 初始化页面
+        function init() {
+            // 初始化模态框
+            initModal();
+            
+            // 绑定事件
+            searchInput.addEventListener('input', handleSearch);
+            sortSelect.addEventListener('change', handleSort);
+            prevPageBtn.addEventListener('click', handlePrevPage);
+            nextPageBtn.addEventListener('click', handleNextPage);
+            roleTags.forEach(tag => tag.addEventListener('click', handleRoleFilter));
+
+            // 默认激活射手筛选
+            toggleRoleFilter('marksman');
+
+            // 渲染英雄列表
+            renderHeroList();
+        }
+
+        // 角色筛选处理
+        function handleRoleFilter(e) {
+            const role = e.target.dataset.role;
+            toggleRoleFilter(role);
+        }
+
+        // 切换角色筛选
+        function toggleRoleFilter(role) {
+            const index = currentFilter.roles.indexOf(role);
+            const tag = document.querySelector(`[data-role="${role}"]`);
+
+            if (index > -1) {
+                // 移除筛选
+                currentFilter.roles.splice(index, 1);
+                tag.classList.remove('active');
+            } else {
+                // 添加筛选
+                currentFilter.roles.push(role);
+                tag.classList.add('active');
+            }
+
+            // 重置页码
+            currentFilter.page = 1;
+
+            // 重新渲染
+            renderHeroList();
+        }
+
+        // 搜索处理
+        function handleSearch(e) {
+            currentFilter.search = e.target.value.trim();
+            currentFilter.page = 1;
+            renderHeroList();
+        }
+
+        // 排序处理
+        function handleSort(e) {
+            currentFilter.sort = e.target.value;
+            currentFilter.page = 1;
+            renderHeroList();
+        }
+
+        // 上一页处理
+        function handlePrevPage() {
+            if (currentFilter.page > 1) {
+                currentFilter.page--;
+                renderHeroList();
+            }
+        }
+
+        // 下一页处理
+        function handleNextPage() {
+            const filteredHeroes = getFilteredHeroes();
+            const totalPages = Math.ceil(filteredHeroes.length / currentFilter.pageSize);
+            if (currentFilter.page < totalPages) {
+                currentFilter.page++;
+                renderHeroList();
+            }
+        }
+
+        // 获取筛选后的英雄列表
+        function getFilteredHeroes() {
+            let filtered = [...heroes];
+
+            // 角色筛选
+            if (currentFilter.roles.length > 0) {
+                filtered = filtered.filter(hero => 
+                    hero.roles.some(role => currentFilter.roles.includes(role))
+                );
+            }
+
+            // 搜索筛选
+            if (currentFilter.search) {
+                const searchTerm = currentFilter.search.toLowerCase();
+                filtered = filtered.filter(hero => 
+                    hero.name.toLowerCase().includes(searchTerm)
+                );
+            }
+
+            // 排序
+            switch (currentFilter.sort) {
+                case 'name-asc':
+                    filtered.sort((a, b) => a.name.localeCompare(b.name, 'zh-CN'));
+                    break;
+                case 'name-desc':
+                    filtered.sort((a, b) => b.name.localeCompare(a.name, 'zh-CN'));
+                    break;
+            }
+
+            return filtered;
+        }
+
+        // 渲染英雄列表
+        function renderHeroList() {
+            const filteredHeroes = getFilteredHeroes();
+            const totalPages = Math.ceil(filteredHeroes.length / currentFilter.pageSize);
+            const startIndex = (currentFilter.page - 1) * currentFilter.pageSize;
+            const endIndex = startIndex + currentFilter.pageSize;
+            const currentPageHeroes = filteredHeroes.slice(startIndex, endIndex);
+
+            // 更新结果计数
+            resultCount.textContent = `共 ${filteredHeroes.length} 个AD英雄`;
+
+            // 渲染英雄卡片
+            heroGrid.innerHTML = '';
+            currentPageHeroes.forEach(hero => {
+                const card = createHeroCard(hero);
+                heroGrid.appendChild(card);
+            });
+
+            // 更新分页信息
+            currentPageSpan.textContent = currentFilter.page;
+            totalPagesSpan.textContent = totalPages;
+
+            // 更新分页按钮状态
+            prevPageBtn.disabled = currentFilter.page === 1;
+            nextPageBtn.disabled = currentFilter.page === totalPages;
+        }
+
+        // 创建英雄卡片
+        function createHeroCard(hero) {
+            const card = document.createElement('div');
+            card.className = 'hero-card';
+
+            // 英雄图片
+            const image = document.createElement('img');
+            image.className = 'hero-image';
+            image.src = hero.image;
+            image.alt = hero.name;
+            
+            // 添加点击显示大图功能
+            image.onclick = function() {
+                showModal(hero);
+            };
+
+            // 英雄信息
+            const info = document.createElement('div');
+            info.className = 'hero-info';
+
+            // 英雄名称
+            const name = document.createElement('div');
+            name.className = 'hero-name';
+            name.textContent = hero.name;
+
+            // 组装卡片（仅保留图片和名称）
+            info.appendChild(name);
+            card.appendChild(image);
+            card.appendChild(info);
+
+            return card;
+        }
+
+        // 显示大图模态框
+        function showModal(hero) {
+            modalImg.src = hero.image;
+            modalCaption.textContent = hero.name;
+            modal.style.display = 'block';
+        }
+
+        // 获取角色中文名称
+        function getRoleName(role) {
+            const roleNames = {
+                marksman: '射手',
+                fighter: '战士',
+                support: '辅助',
+                tank: '坦克',
+                mage: '法师',
+                assassin: '刺客'
+            };
+            return roleNames[role] || role;
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
