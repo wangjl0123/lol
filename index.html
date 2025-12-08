@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AD英雄列表 - 英雄联盟</title>
+    <title>英雄联盟-海克斯大乱斗</title>
     <style>
         * {
             margin: 0;
@@ -172,8 +172,8 @@
 
         .hero-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 30px;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
             margin-bottom: 40px;
         }
 
@@ -195,7 +195,7 @@
 
         .hero-image {
             width: 100%;
-            height: 200px;
+            height: 150px;
             object-fit: cover;
             transition: all 0.3s ease;
         }
@@ -205,7 +205,7 @@
         }
 
         .hero-info {
-            padding: 20px;
+            padding: 15px;
         }
 
         .hero-name {
@@ -418,7 +418,31 @@
             { id: 25, name: "尼菈", roles: ["marksman"], image: "images/ad/screenshot_0024.jpg" },
             { id: 26, name: "小炮", roles: ["marksman"], image: "images/ad/screenshot_0025.jpg" },
             { id: 27, name: "阿克尚", roles: ["marksman"], image: "images/ad/screenshot_0026.jpg" },
-            { id: 28, name: "飞机", roles: ["marksman"], image: "images/ad/screenshot_0027.jpg" }
+            { id: 28, name: "飞机", roles: ["marksman"], image: "images/ad/screenshot_0027.jpg" },
+            // 刺客英雄
+            { id: 29, name: "铁血猎手", roles: ["assassin"], image: "images/刺客/screenshot_0000.jpg" },
+            { id: 30, name: "男刀", roles: ["assassin"], image: "images/刺客/screenshot_0001.jpg" },
+            { id: 31, name: "梦魇", roles: ["assassin"], image: "images/刺客/screenshot_0002.jpg" },
+            { id: 32, name: "琪亚娜", roles: ["assassin"], image: "images/刺客/screenshot_0003.jpg" },
+            { id: 33, name: "螳螂", roles: ["assassin"], image: "images/刺客/screenshot_0004.jpg" },
+            { id: 34, name: "凯影", roles: ["assassin"], image: "images/刺客/screenshot_0005.jpg" },
+            { id: 35, name: "永恩", roles: ["assassin"], image: "images/刺客/screenshot_0006.jpg" },
+            { id: 36, name: "小丑", roles: ["assassin"], image: "images/刺客/screenshot_0007.jpg" },
+            { id: 37, name: "狮子狗", roles: ["assassin"], image: "images/刺客/screenshot_0008.jpg" },
+            { id: 38, name: "劫", roles: ["assassin"], image: "images/刺客/screenshot_0009.jpg" },
+            { id: 39, name: "百类冥犬", roles: ["assassin"], image: "images/刺客/screenshot_0010.jpg" },
+            { id: 40, name: "艾克", roles: ["assassin"], image: "images/刺客/screenshot_0011.jpg" },
+            { id: 41, name: "蜘蛛", roles: ["assassin"], image: "images/刺客/screenshot_0012.jpg" },
+            { id: 42, name: "小鱼人", roles: ["assassin"], image: "images/刺客/screenshot_0013.jpg" },
+            { id: 43, name: "皎月", roles: ["assassin"], image: "images/刺客/screenshot_0014.jpg" },
+            { id: 44, name: "卡萨丁", roles: ["assassin"], image: "images/刺客/screenshot_0015.jpg" },
+            { id: 45, name: "豹女", roles: ["assassin"], image: "images/刺客/screenshot_0016.jpg" },
+            { id: 46, name: "阿卡丽", roles: ["assassin"], image: "images/刺客/screenshot_0017.jpg" },
+            { id: 47, name: "伊芙琳", roles: ["assassin"], image: "images/刺客/screenshot_0018.jpg" },
+            { id: 48, name: "妖姬", roles: ["assassin"], image: "images/刺客/screenshot_0019.jpg" },
+            { id: 49, name: "卡特", roles: ["assassin"], image: "images/刺客/screenshot_0020.jpg" },
+            { id: 50, name: "派克", roles: ["assassin"], image: "images/刺客/screenshot_0021.jpg" },
+            { id: 51, name: "剑圣", roles: ["assassin"], image: "images/刺客/screenshot_0022.jpg" }
         ];
 
         // 大图预览模态框
@@ -491,11 +515,9 @@
             modal.appendChild(imgContainer);
             document.body.appendChild(modal);
 
-            // 点击模态框背景关闭
-            modal.onclick = function(event) {
-                if (event.target === modal) {
-                    modal.style.display = 'none';
-                }
+            // 点击任意区域关闭模态框
+            modal.onclick = function() {
+                modal.style.display = 'none';
             };
         }
 
@@ -505,7 +527,7 @@
             search: '',
             sort: 'name-asc',
             page: 1,
-            pageSize: 12
+            pageSize: 30
         };
 
         // DOM元素
@@ -544,20 +566,22 @@
             toggleRoleFilter(role);
         }
 
-        // 切换角色筛选
+        // 切换角色筛选（单选模式）
         function toggleRoleFilter(role) {
-            const index = currentFilter.roles.indexOf(role);
-            const tag = document.querySelector(`[data-role="${role}"]`);
-
-            if (index > -1) {
-                // 移除筛选
-                currentFilter.roles.splice(index, 1);
+            // 清除所有已选择的角色
+            currentFilter.roles = [];
+            
+            // 移除所有标签的active类
+            document.querySelectorAll('.role-tag').forEach(tag => {
                 tag.classList.remove('active');
-            } else {
-                // 添加筛选
-                currentFilter.roles.push(role);
-                tag.classList.add('active');
-            }
+            });
+            
+            // 添加当前选择的角色
+            currentFilter.roles.push(role);
+            
+            // 为当前标签添加active类
+            const tag = document.querySelector(`[data-role="${role}"]`);
+            tag.classList.add('active');
 
             // 重置页码
             currentFilter.page = 1;
@@ -630,6 +654,16 @@
             return filtered;
         }
 
+        // 角色名称映射
+        const roleNameMap = {
+            'marksman': '射手',
+            'assassin': '刺客',
+            'fighter': '战士',
+            'support': '辅助',
+            'tank': '坦克',
+            'mage': '法师'
+        };
+
         // 渲染英雄列表
         function renderHeroList() {
             const filteredHeroes = getFilteredHeroes();
@@ -639,7 +673,12 @@
             const currentPageHeroes = filteredHeroes.slice(startIndex, endIndex);
 
             // 更新结果计数
-            resultCount.textContent = `共 ${filteredHeroes.length} 个AD英雄`;
+            if (currentFilter.roles.length > 0) {
+                const roleName = roleNameMap[currentFilter.roles[0]];
+                resultCount.textContent = `共 ${filteredHeroes.length} 个${roleName}英雄`;
+            } else {
+                resultCount.textContent = `共 ${filteredHeroes.length} 个英雄`;
+            }
 
             // 渲染英雄卡片
             heroGrid.innerHTML = '';
@@ -667,6 +706,7 @@
             image.className = 'hero-image';
             image.src = hero.image;
             image.alt = hero.name;
+            image.loading = 'lazy'; // 添加懒加载
             
             // 添加点击显示大图功能
             image.onclick = function() {
