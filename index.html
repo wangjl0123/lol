@@ -442,7 +442,51 @@
             { id: 48, name: "妖姬", roles: ["assassin"], image: "images/刺客/screenshot_0019.jpg" },
             { id: 49, name: "卡特", roles: ["assassin"], image: "images/刺客/screenshot_0020.jpg" },
             { id: 50, name: "派克", roles: ["assassin"], image: "images/刺客/screenshot_0021.jpg" },
-            { id: 51, name: "剑圣", roles: ["assassin"], image: "images/刺客/screenshot_0022.jpg" }
+            { id: 51, name: "剑圣", roles: ["assassin"], image: "images/刺客/screenshot_0022.jpg" },
+        // 法师英雄
+        { id: 52, name: "兔子", roles: ["mage"], image: "images/法师/1.jpg" },
+        { id: 53, name: "卡尔玛", roles: ["mage"], image: "images/法师/2.jpg" },
+        { id: 54, name: "安妮", roles: ["mage"], image: "images/法师/3.jpg" },
+        { id: 55, name: "妮寇", roles: ["mage"], image: "images/法师/4.jpg" },
+        { id: 56, name: "虚空先知", roles: ["mage"], image: "images/法师/5.jpg" },
+        { id: 57, name: "虚空之眼", roles: ["mage"], image: "images/法师/6.jpg" },
+        { id: 58, name: "泽拉斯", roles: ["mage"], image: "images/法师/7.jpg" },
+        { id: 59, name: "炸弹人", roles: ["mage"], image: "images/法师/8.jpg" },
+        { id: 60, name: "佐伊", roles: ["mage"], image: "images/法师/9.jpg" },
+        { id: 61, name: "酒桶", roles: ["mage"], image: "images/法师/10.jpg" },
+        { id: 62, name: "火男", roles: ["mage"], image: "images/法师/11.jpg" },
+        { id: 63, name: "阿狸", roles: ["mage"], image: "images/法师/12.jpg" },
+        { id: 64, name: "冰女", roles: ["mage"], image: "images/法师/13.jpg" },
+        { id: 65, name: "龙王", roles: ["mage"], image: "images/法师/14.jpg" },
+        { id: 66, name: "梅尔", roles: ["mage"], image: "images/法师/15.jpg" },
+        { id: 67, name: "法条魔灵", roles: ["mage"], image: "images/法师/16.jpg" },
+        { id: 68, name: "光辉", roles: ["mage"], image: "images/法师/17.jpg" },
+        { id: 69, name: "熬夜波比", roles: ["mage"], image: "images/法师/18.jpg" },
+        { id: 70, name: "辛德拉", roles: ["mage"], image: "images/法师/19.jpg" },
+        { id: 71, name: "岩雀", roles: ["mage"], image: "images/法师/20.jpg" },
+        { id: 72, name: "瑞兹", roles: ["mage"], image: "images/法师/21.jpg" },
+        { id: 73, name: "卡牌大师", roles: ["mage"], image: "images/法师/22.jpg" },
+        { id: 74, name: "邪恶小法师", roles: ["mage"], image: "images/法师/23.jpg" },
+        { id: 75, name: "塞拉斯", roles: ["mage"], image: "images/法师/24.jpg" },
+        { id: 76, name: "维克托", roles: ["mage"], image: "images/法师/25.jpg" },
+        { id: 77, name: "提莫", roles: ["mage"], image: "images/法师/26.jpg" },
+        { id: 78, name: "大发明家", roles: ["mage"], image: "images/法师/27.jpg" },
+        { id: 79, name: "婕拉", roles: ["mage"], image: "images/法师/28.jpg" },
+        { id: 80, name: "死歌", roles: ["mage"], image: "images/法师/29.jpg" },
+        { id: 81, name: "异画师（慧）", roles: ["mage"], image: "images/法师/30.jpg" },
+        { id: 82, name: "蛇女", roles: ["mage"], image: "images/法师/31.jpg" },
+        { id: 83, name: "冰鸟", roles: ["mage"], image: "images/法师/32.jpg" },
+        { id: 84, name: "莉莉娅", roles: ["mage"], image: "images/法师/33.jpg" },
+        { id: 85, name: "沙皇", roles: ["mage"], image: "images/法师/34.jpg" },
+        { id: 86, name: "雪人骑士（努努）", roles: ["mage"], image: "images/法师/35.jpg" },
+        { id: 87, name: "兰博", roles: ["mage"], image: "images/法师/36.jpg" },
+        { id: 88, name: "凯南", roles: ["mage"], image: "images/法师/37.jpg" },
+        { id: 89, name: "末日", roles: ["mage"], image: "images/法师/38.jpg" },
+        { id: 90, name: "铁男", roles: ["mage"], image: "images/法师/39.jpg" },
+        { id: 91, name: "乌鸦", roles: ["mage"], image: "images/法师/40.jpg" },
+        { id: 92, name: "格温", roles: ["mage"], image: "images/法师/41.jpg" },
+        { id: 93, name: "莫甘娜", roles: ["mage"], image: "images/法师/42.jpg" },
+        { id: 94, name: "吸血鬼", roles: ["mage"], image: "images/法师/43.jpg" }
         ];
 
         // 大图预览模态框
@@ -704,9 +748,24 @@
             // 英雄图片
             const image = document.createElement('img');
             image.className = 'hero-image';
-            image.src = hero.image;
+            
+            // 添加占位符
+            image.src = 'data:image/svg+xml;charset=utf-8,%3Csvg xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22 width%3D%22250%22 height%3D%22150%22 viewBox%3D%220 0 250 150%22%3E%3Crect width%3D%22250%22 height%3D%22150%22 fill%3D%22%23333%22%2F%3E%3Ctext x%3D%22125%22 y%3D%2285%22 font-size%3D%2216%22 fill%3D%22%23666%22 text-anchor%3D%22middle%22 font-family%3D%22Arial%22%3E"+encodeURIComponent(hero.name)+"%3C%2Ftext%3E%3C%2Fsvg%3E';
             image.alt = hero.name;
             image.loading = 'lazy'; // 添加懒加载
+            
+            // 预加载真实图片
+            const realImage = new Image();
+            realImage.src = hero.image;
+            realImage.onload = function() {
+                image.src = hero.image;
+            };
+            
+            // 图片加载错误处理
+            realImage.onerror = function() {
+                // 加载失败时显示占位符
+                image.src = 'data:image/svg+xml;charset=utf-8,%3Csvg xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22 width%3D%22250%22 height%3D%22150%22 viewBox%3D%220 0 250 150%22%3E%3Crect width%3D%22250%22 height%3D%22150%22 fill%3D%22%23333%22%2F%3E%3Ctext x%3D%22125%22 y%3D%2285%22 font-size%3D%2216%22 fill%3D%22%23999%22 text-anchor%3D%22middle%22 font-family%3D%22Arial%22%3E图片加载失败%3C%2Ftext%3E%3C%2Fsvg%3E';
+            };
             
             // 添加点击显示大图功能
             image.onclick = function() {
